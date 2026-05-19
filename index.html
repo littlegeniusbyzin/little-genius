@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Little Genius">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a0a3c">
+<meta name="description" content="Little Genius — a fun space math game for kids!">
+<title>Little Genius 🚀</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<!-- ✅ ADSENSE: Replace ca-pub-XXXXXXXXXXXXXXXXX with your Publisher ID once approved -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+<style>
+  :root {
+    --sky:#1a0a3c;--purple:#6c3fc5;--violet:#9b5de5;--pink:#f72585;--cyan:#00f5d4;
+    --yellow:#fee440;--orange:#f77f00;--green:#06d6a0;
+    --card:rgba(255,255,255,0.07);--card-border:rgba(255,255,255,0.15);
+    --fs-xs:clamp(10px,2.2vw,12px);--fs-sm:clamp(12px,2.8vw,14px);--fs-base:clamp(14px,3.2vw,16px);
+    --fs-md:clamp(15px,3.5vw,18px);--fs-lg:clamp(18px,4vw,22px);--fs-xl:clamp(22px,5vw,28px);
+    --fs-2xl:clamp(28px,7vw,40px);--fs-logo:clamp(30px,8vw,52px);
+    --gap-sm:clamp(6px,2vw,10px);--gap-md:clamp(10px,3vw,16px);--gap-lg:clamp(14px,4vw,24px);
+    --pad-card:clamp(14px,4vw,24px);--touch:clamp(44px,12vw,56px);
+    --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+    --safe-left:env(safe-area-inset-left,0px);--safe-right:env(safe-area-inset-right,0px);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{height:100%;}
+  body{font-family:'Nunito',sans-serif;background:var(--sky);min-height:100%;min-height:100dvh;
+    overflow-x:hidden;position:relative;overscroll-behavior:none;
+    -webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+  .stars{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(ellipse at 20% 20%,#2d0a6e 0%,#1a0a3c 40%,#0a0520 100%);}
+  .star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--d) ease-in-out infinite var(--delay);}
+  @keyframes twinkle{0%,100%{opacity:0.2;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+  .planet{position:fixed;border-radius:50%;opacity:0.12;pointer-events:none;z-index:0;animation:floatPlanet 8s ease-in-out infinite;}
+  .p1{width:clamp(60px,15vw,120px);height:clamp(60px,15vw,120px);background:radial-gradient(circle at 35% 35%,#f72585,#6c3fc5);top:6%;right:4%;}
+  .p2{width:clamp(40px,10vw,80px);height:clamp(40px,10vw,80px);background:radial-gradient(circle at 35% 35%,#fee440,#f77f00);bottom:12%;left:3%;animation-delay:-3s;}
+  .p3{width:clamp(28px,6vw,50px);height:clamp(28px,6vw,50px);background:radial-gradient(circle at 35% 35%,#00f5d4,#6c3fc5);top:50%;right:2%;animation-delay:-5s;}
+  @keyframes floatPlanet{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+  #app{position:relative;z-index:1;width:100%;max-width:560px;margin:0 auto;min-height:100dvh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:calc(var(--gap-lg) + var(--safe-top)) calc(var(--gap-md) + var(--safe-right)) calc(var(--gap-lg) + var(--safe-bottom)) calc(var(--gap-md) + var(--safe-left));}
+  @media(min-width:768px){#app{padding-top:40px;padding-bottom:40px;}}
+  .screen{width:100%;display:none;animation:fadeUp 0.35s ease both;}
+  .screen.active{display:flex;flex-direction:column;align-items:center;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .logo{font-family:'Fredoka One',cursive;font-size:var(--fs-logo);line-height:1;letter-spacing:1px;
+    background:linear-gradient(135deg,var(--yellow),var(--pink),var(--cyan));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    text-align:center;margin-bottom:4px;filter:drop-shadow(0 0 16px rgba(247,37,133,0.4));}
+  .logo-sub{font-size:var(--fs-xs);font-weight:700;letter-spacing:3px;text-transform:uppercase;
+    color:rgba(255,255,255,0.45);text-align:center;margin-bottom:clamp(16px,5vw,28px);}
+  .card{background:var(--card);border:1px solid var(--card-border);border-radius:clamp(16px,4vw,24px);
+    padding:var(--pad-card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    width:100%;margin-bottom:var(--gap-md);}
+  .section-label{font-size:var(--fs-xs);font-weight:800;letter-spacing:2px;text-transform:uppercase;
+    color:rgba(255,255,255,0.4);margin-bottom:var(--gap-sm);}
+  .topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-sm);}
+  .topic-btn{background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);
+    border-radius:clamp(12px,3vw,16px);padding:clamp(10px,3vw,14px) 8px;
+    color:white;font-family:'Nunito',sans-serif;font-size:var(--fs-sm);font-weight:700;
+    cursor:pointer;transition:all 0.18s;text-align:center;
+    display:flex;flex-direction:column;align-items:center;gap:4px;min-height:var(--touch);}
+  .topic-btn .t-icon{font-size:clamp(22px,5vw,28px);line-height:1;}
+  .topic-btn:active{transform:scale(0.95);}
+  .topic-btn.sel{border-color:var(--cyan);background:rgba(0,245,212,0.12);color:var(--cyan);}
+  .diff-row{display:flex;gap:var(--gap-sm);}
+  .diff-btn{flex:1;border-radius:clamp(10px,2.5vw,12px);font-size:var(--fs-sm);font-weight:700;
+    border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);
+    color:white;cursor:pointer;transition:all 0.18s;font-family:'Nunito',sans-serif;
+    text-align:center;min-height:var(--touch);}
+  .diff-btn:active{transform:scale(0.95);}
+  .diff-btn.sel{border-color:var(--yellow);background:rgba(254,228,64,0.12);color:var(--yellow);}
+  .start-btn{width:100%;min-height:var(--touch);border-radius:clamp(14px,4vw,20px);border:none;
+    font-family:'Fredoka One',cursive;font-size:var(--fs-lg);letter-spacing:1px;
+    cursor:pointer;transition:all 0.2s;
+    background:linear-gradient(135deg,var(--pink),var(--violet));
+    color:white;box-shadow:0 8px 28px rgba(247,37,133,0.35);margin-top:var(--gap-sm);}
+  .start-btn:active{transform:scale(0.97);}
+  .hud{display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:clamp(8px,2.5vw,14px);}
+  .hud-score{font-family:'Fredoka One',cursive;font-size:var(--fs-lg);color:var(--yellow);text-shadow:0 0 12px rgba(254,228,64,0.4);}
+  .hud-q{font-size:var(--fs-sm);font-weight:700;color:rgba(255,255,255,0.4);}
+  .hud-streak{font-size:var(--fs-sm);font-weight:800;color:var(--orange);min-width:50px;text-align:right;}
+  .progress-track{width:100%;height:7px;background:rgba(255,255,255,0.1);border-radius:99px;overflow:hidden;margin-bottom:clamp(12px,3.5vw,20px);}
+  .progress-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width 0.5s cubic-bezier(.4,0,.2,1);}
+  .question-card{width:100%;background:var(--card);border:1px solid var(--card-border);
+    border-radius:clamp(18px,5vw,28px);padding:clamp(20px,6vw,36px) clamp(14px,4vw,24px);
+    text-align:center;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    margin-bottom:clamp(12px,3vw,18px);position:relative;overflow:hidden;}
+  .question-card::before{content:'';position:absolute;inset:-40%;z-index:0;
+    background:radial-gradient(circle at 50% 50%,rgba(108,63,197,0.2),transparent 60%);
+    animation:pulseGlow 3s ease-in-out infinite;}
+  @keyframes pulseGlow{0%,100%{opacity:0.5}50%{opacity:1}}
+  .q-topic{font-size:var(--fs-xs);font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:clamp(6px,2vw,12px);position:relative;z-index:1;}
+  .q-text{font-family:'Fredoka One',cursive;font-size:var(--fs-2xl);color:white;line-height:1;position:relative;z-index:1;text-shadow:0 0 24px rgba(255,255,255,0.15);}
+  .q-timer-ring{position:absolute;top:10px;right:10px;z-index:2;width:clamp(36px,9vw,46px);height:clamp(36px,9vw,46px);}
+  .timer-svg circle{transition:stroke-dashoffset 1s linear;}
+  .timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:clamp(13px,3.5vw,17px);color:white;}
+  .answers-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-sm);width:100%;margin-bottom:clamp(8px,2.5vw,14px);}
+  .ans-btn{min-height:clamp(56px,14vw,76px);border-radius:clamp(14px,4vw,20px);border:2px solid rgba(255,255,255,0.1);
+    background:rgba(255,255,255,0.07);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    color:white;font-family:'Fredoka One',cursive;font-size:var(--fs-xl);
+    cursor:pointer;transition:all 0.16s;position:relative;overflow:hidden;touch-action:manipulation;}
+  .ans-btn:active:not(:disabled){transform:scale(0.93);}
+  .ans-btn.correct{background:rgba(6,214,160,0.2);border-color:var(--green);color:var(--green);animation:correctPop 0.4s ease;}
+  .ans-btn.wrong{background:rgba(247,37,133,0.15);border-color:var(--pink);color:var(--pink);animation:wrongShake 0.4s ease;}
+  @keyframes correctPop{0%{transform:scale(1)}40%{transform:scale(1.1)}100%{transform:scale(1)}}
+  @keyframes wrongShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .feedback-row{width:100%;text-align:center;min-height:40px;display:flex;align-items:center;justify-content:center;font-size:var(--fs-md);font-weight:800;color:white;animation:fadeUp 0.25s ease;}
+  .feedback-row.correct-fb{color:var(--green);}
+  .feedback-row.wrong-fb{color:rgba(255,255,255,0.55);}
+  .next-btn{width:100%;min-height:var(--touch);border-radius:clamp(12px,3.5vw,18px);border:none;
+    font-family:'Fredoka One',cursive;font-size:var(--fs-lg);cursor:pointer;transition:all 0.18s;display:none;
+    background:linear-gradient(135deg,var(--violet),var(--pink));color:white;
+    box-shadow:0 6px 22px rgba(155,93,229,0.3);margin-top:var(--gap-sm);}
+  .next-btn.visible{display:block;animation:fadeUp 0.25s ease;}
+  .next-btn:active{transform:scale(0.97);}
+  .results-hero{text-align:center;margin-bottom:var(--gap-lg);}
+  .result-emoji{font-size:clamp(52px,14vw,80px);line-height:1;display:block;margin-bottom:8px;animation:bounceIn 0.55s cubic-bezier(.36,.07,.19,.97) both;}
+  @keyframes bounceIn{0%{transform:scale(0)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+  .result-title{font-family:'Fredoka One',cursive;font-size:var(--fs-2xl);color:white;margin-bottom:4px;}
+  .result-sub{font-size:var(--fs-sm);color:rgba(255,255,255,0.5);font-weight:600;}
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap-sm);width:100%;margin-bottom:var(--gap-md);}
+  .stat-card{background:var(--card);border:1px solid var(--card-border);border-radius:clamp(12px,3.5vw,18px);padding:clamp(10px,3vw,16px) 6px;text-align:center;backdrop-filter:blur(8px);}
+  .stat-val{font-family:'Fredoka One',cursive;font-size:var(--fs-xl);color:white;display:block;}
+  .stat-label{font-size:var(--fs-xs);font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.35);margin-top:2px;display:block;}
+  .stars-row{display:flex;gap:8px;justify-content:center;margin:var(--gap-md) 0;}
+  .star-icon{font-size:clamp(28px,8vw,42px);animation:starPop 0.4s cubic-bezier(.36,.07,.19,.97) both;}
+  .star-icon:nth-child(2){animation-delay:0.15s}.star-icon:nth-child(3){animation-delay:0.3s}
+  @keyframes starPop{0%{transform:scale(0) rotate(-30deg)}70%{transform:scale(1.2) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+  .results-btns{display:flex;gap:var(--gap-sm);width:100%;margin-top:4px;}
+  .back-btn{flex:1;min-height:var(--touch);border-radius:clamp(12px,3.5vw,16px);border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:white;font-family:'Fredoka One',cursive;font-size:var(--fs-md);cursor:pointer;transition:all 0.18s;}
+  .back-btn:active{transform:scale(0.96);}
+  .replay-btn{flex:1.5;min-height:var(--touch);border-radius:clamp(12px,3.5vw,16px);border:none;background:linear-gradient(135deg,var(--pink),var(--violet));color:white;font-family:'Fredoka One',cursive;font-size:var(--fs-md);cursor:pointer;transition:all 0.18s;box-shadow:0 6px 22px rgba(247,37,133,0.3);}
+  .replay-btn:active{transform:scale(0.96);}
+  .confetti-piece{position:fixed;top:-10px;z-index:999;pointer-events:none;border-radius:2px;animation:confettiFall var(--dur) ease-in var(--del) forwards;}
+  @keyframes confettiFall{0%{transform:translateY(0) rotate(0) translateX(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg) translateX(var(--dx));opacity:0}}
+  .coin{position:fixed;z-index:50;pointer-events:none;font-size:clamp(18px,5vw,26px);animation:coinFloat var(--dur) ease-out var(--del) forwards;}
+  @keyframes coinFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-70px) scale(0.5)}}
+  .ad-zone:empty,.ad-zone:not(:has(ins.adsbygoogle)){display:none;}
+  .ad-zone{width:100%;min-height:90px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.08);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:var(--gap-md);overflow:hidden;}
+  .ad-zone ins{display:block;width:100%;}
+  .kofi-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 16px;border-radius:99px;border:1.5px solid rgba(255,220,80,0.25);background:rgba(255,220,80,0.06);color:rgba(255,255,255,0.65);font-family:'Nunito',sans-serif;font-size:var(--fs-sm);font-weight:700;cursor:pointer;transition:all 0.2s;text-decoration:none;margin-top:var(--gap-sm);}
+  .kofi-btn:hover{background:rgba(255,220,80,0.13);border-color:rgba(255,220,80,0.45);color:white;}
+  .kofi-btn:active{transform:scale(0.97);}
+  #install-banner{position:fixed;bottom:calc(16px + var(--safe-bottom));left:50%;transform:translateX(-50%);
+    background:linear-gradient(135deg,var(--violet),var(--pink));color:white;
+    font-family:'Nunito',sans-serif;font-size:var(--fs-sm);font-weight:700;
+    padding:12px 20px;border-radius:99px;z-index:200;cursor:pointer;
+    box-shadow:0 6px 24px rgba(155,93,229,0.5);white-space:nowrap;display:none;animation:fadeUp 0.4s ease;}
+  @media(max-height:500px) and (orientation:landscape){
+    .logo{font-size:clamp(20px,5vh,30px);}
+    .logo-sub{margin-bottom:8px;}
+    .card{margin-bottom:8px;padding:10px 14px;}
+    .topic-btn{padding:8px;min-height:38px;}
+    .diff-btn{min-height:36px;}
+    .question-card{padding:12px 14px;}
+    .q-text{font-size:clamp(20px,6vh,30px);}
+    .results-hero{margin-bottom:8px;}
+    .result-emoji{font-size:38px;}
+  }
+  @media(min-width:1024px){
+    .ans-btn:hover:not(:disabled){transform:scale(1.04);border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.13);}
+    .start-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(247,37,133,0.45);}
+    .topic-btn:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.28);}
+  }
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="planet p1"></div><div class="planet p2"></div><div class="planet p3"></div>
+<div id="install-banner" onclick="installApp()">📲 Add to Home Screen</div>
+<div id="app">
+  <div class="screen active" id="home-screen">
+    <!-- AD ZONE TOP: uncomment the <ins> tag once AdSense is approved -->
+    <div class="ad-zone" id="ad-top">
+      <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->
+    </div>
+    <div class="logo">Little Genius</div>
+    <div class="logo-sub">Space Math Edition 🚀</div>
+    <div class="card">
+      <div class="section-label">Choose your mission</div>
+      <div class="topic-grid">
+        <button class="topic-btn sel" onclick="selectTopic(this,'addition')"><span class="t-icon">➕</span>Addition</button>
+        <button class="topic-btn" onclick="selectTopic(this,'subtraction')"><span class="t-icon">➖</span>Subtraction</button>
+        <button class="topic-btn" onclick="selectTopic(this,'multiplication')"><span class="t-icon">✖️</span>Multiply</button>
+        <button class="topic-btn" onclick="selectTopic(this,'mixed')"><span class="t-icon">🎲</span>Mixed</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-label">Difficulty</div>
+      <div class="diff-row">
+        <button class="diff-btn sel" onclick="selectDiff(this,'easy')">🌱 Easy</button>
+        <button class="diff-btn" onclick="selectDiff(this,'medium')">🔥 Medium</button>
+        <button class="diff-btn" onclick="selectDiff(this,'hard')">⚡ Hard</button>
+      </div>
+    </div>
+    <button class="start-btn" onclick="startGame()">🚀 Launch!</button>
+    <a class="kofi-btn" href="https://ko-fi.com/littlegeniusbyzin" target="_blank" rel="noopener">
+      ☕ Enjoying the game? Support Little Genius — it's free, forever!
+    </a>
+  </div>
+
+  <div class="screen" id="q-screen">
+    <div class="hud">
+      <div class="hud-score">⭐ <span id="score-val">0</span></div>
+      <div class="hud-q"><span id="q-num">1</span>/10</div>
+      <div class="hud-streak" id="streak-display"></div>
+    </div>
+    <div class="progress-track"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
+    <div class="question-card">
+      <div class="q-timer-ring">
+        <svg class="timer-svg" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+          <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3"/>
+          <circle id="timer-circle" cx="22" cy="22" r="18" fill="none" stroke="#00f5d4" stroke-width="3"
+            stroke-dasharray="113" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 22 22)"/>
+        </svg>
+        <div class="timer-num" id="timer-num">10</div>
+      </div>
+      <div class="q-topic" id="q-topic">Addition</div>
+      <div class="q-text" id="q-text">3 + 4 = ?</div>
+    </div>
+    <div class="answers-grid" id="answers"></div>
+    <div class="feedback-row" id="feedback"></div>
+    <button class="next-btn" id="next-btn" onclick="nextQ()">Next ➡️</button>
+  </div>
+
+  <div class="screen" id="results-screen">
+    <div class="results-hero">
+      <span class="result-emoji" id="result-emoji">🏆</span>
+      <div class="result-title" id="result-title">Amazing!</div>
+      <div class="result-sub" id="result-sub">You're a math genius!</div>
+      <div class="stars-row" id="stars-row"></div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><span class="stat-val" id="st-score">0</span><span class="stat-label">Points</span></div>
+      <div class="stat-card"><span class="stat-val" id="st-correct">0/10</span><span class="stat-label">Correct</span></div>
+      <div class="stat-card"><span class="stat-val" id="st-streak">0🔥</span><span class="stat-label">Best Streak</span></div>
+    </div>
+    <div class="results-btns">
+      <button class="back-btn" onclick="goHome()">← Menu</button>
+      <button class="replay-btn" onclick="startGame()">Play Again! 🚀</button>
+    </div>
+    <a class="kofi-btn" href="https://ko-fi.com/littlegeniusbyzin" target="_blank" rel="noopener" style="margin-top:14px;">
+      ☕ Love this game? Buy us a coffee — keeps it free!
+    </a>
+    <!-- AD ZONE BOTTOM: uncomment once AdSense approved -->
+    <div class="ad-zone" style="margin-top:14px;margin-bottom:0;">
+      <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->
+    </div>
+  </div>
+  </div>
+</div>
+
+<script>
+const starsEl=document.getElementById('stars');
+for(let i=0;i<100;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2.5+0.5;s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2+Math.random()*3}s;--delay:${-Math.random()*4}s`;starsEl.appendChild(s);}
+
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('install-banner').style.display='block';});
+function installApp(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('install-banner').style.display='none';});}}
+window.addEventListener('appinstalled',()=>{document.getElementById('install-banner').style.display='none';});
+
+let topic='addition',diff='easy',questions=[],cur=0,score=0,correct=0,streak=0,bestStreak=0;
+let timerInterval=null,timeLeft=10;
+const TIMER_MAX=10;
+
+function selectTopic(el,t){el.closest('.topic-grid').querySelectorAll('.topic-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');topic=t;}
+function selectDiff(el,d){el.closest('.diff-row').querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');diff=d;}
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+
+function makeQ(){
+  const ranges={easy:[1,12],medium:[5,30],hard:[10,50]};
+  const [lo,hi]=ranges[diff];let a,b,op,answer,text,label;
+  const ops=topic==='mixed'?['+','-','×']:topic==='addition'?['+']:topic==='subtraction'?['-']:['×'];
+  op=ops[rnd(0,ops.length-1)];
+  if(op==='+'){a=rnd(lo,hi);b=rnd(lo,hi);answer=a+b;text=`${a} + ${b}`;label='Addition';}
+  else if(op==='-'){a=rnd(lo,hi);b=rnd(lo,a);answer=a-b;text=`${a} − ${b}`;label='Subtraction';}
+  else{a=rnd(2,diff==='easy'?9:12);b=rnd(2,diff==='easy'?9:12);answer=a*b;text=`${a} × ${b}`;label='Multiplication';}
+  const wrong=new Set();
+  while(wrong.size<3){let sp=Math.max(3,Math.floor(answer*0.25));let w=answer+rnd(-sp,sp);if(w!==answer&&w>=0)wrong.add(w);}
+  return{text:`${text} = ?`,answer,opts:[...wrong,answer].sort(()=>Math.random()-0.5),label};
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.animation='none';});
+  const el=document.getElementById(id);el.classList.add('active');void el.offsetWidth;el.style.animation='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startGame(){questions=Array.from({length:10},makeQ);cur=0;score=0;correct=0;streak=0;bestStreak=0;showScreen('q-screen');renderQ();}
+
+function renderQ(){
+  const q=questions[cur];
+  document.getElementById('q-num').textContent=cur+1;
+  document.getElementById('score-val').textContent=score;
+  document.getElementById('prog-bar').style.width=`${cur*10}%`;
+  document.getElementById('q-topic').textContent=q.label;
+  document.getElementById('q-text').textContent=q.text;
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='feedback-row';
+  document.getElementById('next-btn').className='next-btn';
+  const ans=document.getElementById('answers');ans.innerHTML='';
+  q.opts.forEach(opt=>{const btn=document.createElement('button');btn.className='ans-btn';btn.textContent=opt;btn.onclick=()=>checkAnswer(opt,q.answer,btn);ans.appendChild(btn);});
+  startTimer();
+}
+
+function startTimer(){clearInterval(timerInterval);timeLeft=TIMER_MAX;updateTimerUI();timerInterval=setInterval(()=>{timeLeft--;updateTimerUI();if(timeLeft<=0){clearInterval(timerInterval);timeExpired();}},1000);}
+function updateTimerUI(){document.getElementById('timer-num').textContent=timeLeft;const circ=document.getElementById('timer-circle');circ.style.strokeDashoffset=113*(1-timeLeft/TIMER_MAX);circ.style.stroke=timeLeft<=3?'#f72585':timeLeft<=5?'#fee440':'#00f5d4';}
+function timeExpired(){document.querySelectorAll('.ans-btn').forEach(b=>{b.disabled=true;if(parseInt(b.textContent)===questions[cur].answer)b.classList.add('correct');});streak=0;showFeedback(false,"⏰ Time's up! The answer was "+questions[cur].answer);showNextBtn();}
+
+function checkAnswer(chosen,answer,btn){
+  clearInterval(timerInterval);document.querySelectorAll('.ans-btn').forEach(b=>b.disabled=true);
+  const isRight=chosen===answer;
+  if(isRight){btn.classList.add('correct');const pts=diff==='easy'?10:diff==='medium'?15:20;const bonus=Math.max(0,Math.floor(timeLeft/2));score+=pts+bonus;correct++;streak++;if(streak>bestStreak)bestStreak=streak;updateStreak();const msgs=['🎉 Awesome!','⭐ Correct!','🚀 Nailed it!','🎯 Bullseye!','🔥 On fire!','💥 Boom!','✨ Brilliant!'];showFeedback(true,msgs[rnd(0,msgs.length-1)]+(bonus>0?` +${pts}+${bonus} bonus!`:` +${pts} pts!`));spawnCoins(btn);if(streak>=3)spawnConfetti();}
+  else{btn.classList.add('wrong');document.querySelectorAll('.ans-btn').forEach(b=>{if(parseInt(b.textContent)===answer)b.classList.add('correct');});streak=0;updateStreak();showFeedback(false,`Not quite! The answer is ${answer} 💪`);}
+  document.getElementById('score-val').textContent=score;showNextBtn();
+}
+
+function updateStreak(){const el=document.getElementById('streak-display');el.textContent=streak>=2?`${streak}🔥`:'';  }
+function showFeedback(isRight,msg){const fb=document.getElementById('feedback');fb.textContent=msg;fb.className='feedback-row '+(isRight?'correct-fb':'wrong-fb');}
+function showNextBtn(){const nb=document.getElementById('next-btn');nb.textContent=cur<9?'Next ➡️':'See Results! 🏆';nb.className='next-btn visible';}
+function nextQ(){cur++;if(cur>=10)showResults();else renderQ();}
+
+function showResults(){
+  clearInterval(timerInterval);showScreen('results-screen');
+  const pct=correct/10;
+  const cfg=pct>=0.9?{e:'🏆',t:'Galactic Champion!',s:"You're out of this world!",stars:3}:pct>=0.7?{e:'🚀',t:'Space Explorer!',s:"Great skills, keep it up!",stars:2}:pct>=0.4?{e:'🌙',t:'Rising Star!',s:"Practice makes perfect!",stars:1}:{e:'🌱',t:'Keep Going!',s:"You can do it — try again!",stars:1};
+  document.getElementById('result-emoji').textContent=cfg.e;document.getElementById('result-title').textContent=cfg.t;document.getElementById('result-sub').textContent=cfg.s;document.getElementById('st-score').textContent=score;document.getElementById('st-correct').textContent=`${correct}/10`;document.getElementById('st-streak').textContent=`${bestStreak}🔥`;
+  const sr=document.getElementById('stars-row');sr.innerHTML='';
+  for(let i=0;i<3;i++){const s=document.createElement('span');s.className='star-icon';s.textContent=i<cfg.stars?'⭐':'☆';s.style.opacity=i<cfg.stars?'1':'0.3';sr.appendChild(s);}
+  if(pct>=0.7)spawnConfetti(60);
+}
+function goHome(){showScreen('home-screen');}
+function spawnCoins(btn){const rect=btn.getBoundingClientRect();for(let i=0;i<5;i++){const c=document.createElement('div');c.className='coin';c.textContent='🪙';c.style.cssText=`left:${rect.left+rnd(0,rect.width)}px;top:${rect.top}px;--dur:${0.6+Math.random()*0.4}s;--del:${Math.random()*0.2}s`;document.body.appendChild(c);setTimeout(()=>c.remove(),1200);}}
+function spawnConfetti(count=30){const colors=['#f72585','#fee440','#00f5d4','#06d6a0','#f77f00','#9b5de5','#ffffff'];for(let i=0;i<count;i++){const c=document.createElement('div');c.className='confetti-piece';c.style.cssText=`left:${rnd(0,100)}%;background:${colors[rnd(0,colors.length-1)]};width:${rnd(6,12)}px;height:${rnd(6,14)}px;border-radius:${Math.random()>0.5?'50%':'2px'};--dur:${0.8+Math.random()*1}s;--del:${Math.random()*0.5}s;--dx:${rnd(-80,80)}px`;document.body.appendChild(c);setTimeout(()=>c.remove(),2000);}}
+</script>
+</body>
+</html>
